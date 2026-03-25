@@ -56,11 +56,21 @@ const initPkgs = [
 initPkgs.forEach(p => { p.loanCount = p.loans.length; p.discountRate = p.purchasePrice / p.faceValue; p.payments = genWeekly(p.loans); });
 
 const initInvestors = [
-  { id: "inv1", name: "鼎信一号合伙企业(SPV)", type: "SPV", share: { "PKG-2025-001": .45, "PKG-2025-002": .55 }, capital: { "PKG-2025-001": 225000, "PKG-2025-002": 264000 }, phone: "021-88886666", contractDate: "2025-03-01", password: "dingxin123" },
-  { id: "inv2", name: "恒达投资合伙企业(SPV)", type: "SPV", share: { "PKG-2025-001": .35, "PKG-2025-002": .45 }, capital: { "PKG-2025-001": 175000, "PKG-2025-002": 216000 }, phone: "010-66665555", contractDate: "2025-03-05", password: "hengda123" },
-  { id: "inv3", name: "王强", type: "个人", share: { "PKG-2025-001": .20 }, capital: { "PKG-2025-001": 100000 }, phone: "13611112222", contractDate: "2025-03-10", password: "wang123" },
+  { id: "inv1", name: "和基一号资金合伙企业", type: "资金SPV", fundShare: .60, share: { "PKG-2025-001": .45, "PKG-2025-002": .55 }, capital: { "PKG-2025-001": 225000, "PKG-2025-002": 264000 }, phone: "021-88886666", contractDate: "2025-03-01", password: "heji123", members: [{ name: "投资人A旗下主体", role: "LP", ratio: .50 }, { name: "和昱诚跟投主体", role: "LP", ratio: .10 }] },
+  { id: "inv2", name: "和基二号资金合伙企业", type: "资金SPV", fundShare: .30, share: { "PKG-2025-001": .35, "PKG-2025-002": .45 }, capital: { "PKG-2025-001": 175000, "PKG-2025-002": 216000 }, phone: "021-66665555", contractDate: "2025-03-05", password: "heji456", members: [{ name: "投资人B旗下主体", role: "GP/LP", ratio: .25 }, { name: "和昱诚跟投主体", role: "LP", ratio: .05 }] },
+  { id: "inv3", name: "王强", type: "个人LP", fundShare: .10, share: { "PKG-2025-001": .20 }, capital: { "PKG-2025-001": 100000 }, phone: "13611112222", contractDate: "2025-03-10", password: "wang123", members: [] },
 ];
 const initBm = { industry3m: .15, industry6m: .32, industry12m: .55 };
+
+const initCompanyIntro = {
+  name: "上海和昱诚企业管理有限公司",
+  slogan: "专注个贷不良资产投资与管理",
+  overview: "和昱诚在个贷不良资产领域深耕多年，旗下分为投资中心、处置中心和帮扶中心，形成个贷不良资产投资、管理、回收的完整闭环。目前公司累计管理资产总规模100亿元，累计收购消费信贷类资产规模突破30亿元，累计受托服务业务规模近70亿元。",
+  advantages: ["规范的资金管理体系 — 完善的资金管理机制，成熟的风控体系", "卓越的资产管理能力 — 依托大数据建立精准的估值定价模型、系统化管理", "高效的司法处置能力 — 与全国多地司法系统建立良好的协作关系", '独创"信用帮扶中心" — 创新性的化对抗为协作，有效激活债务人还款意愿与还款能力'],
+  structure: "投资结构采用双层合伙企业架构：上层为资金合伙企业SPV（汇集各方出资），下层为资产SPV（负责从AMC收购资产包）。和昱诚旗下主体担任GP并同步跟投，确保与投资人利益一致、共进退。",
+  contact: { phone: "4001-027-872", shanghai: "上海市浦东新区源深路355号源深金融大厦A座10层", nanjing: "江苏省南京市江宁区金源路2号城际空间站D1栋18层" },
+  fundTerms: { scale: "单期5000万~1亿元", duration: "5年期", scope: "消费贷、信用卡等个贷不良债权资产包", mgmtFee: "资金规模×2%/年", carry: "超额收益×20%", hurdle: "7%基础收益", distribution: "本金 → 基础收益(7%) → 超额收益", frequency: "每月20日核算，2个工作日内分配" },
+};
 
 const initAnnouncements = [
   { id: 1, date: "2025-10-14", title: "华东资产包A本周回款简报", content: "本周新增回款 ¥38,200，累计回收率较上周提升0.8%。催收团队已对12名承诺还款人进行跟进确认。", type: "回款通报" },
@@ -72,11 +82,11 @@ const initDocs = [
   { id: 1, name: "2025Q3季度投资报告.pdf", date: "2025-09-30", type: "季度报告", size: "2.4MB", forAll: true },
   { id: 2, name: "华东资产包A-尽调报告.pdf", date: "2025-03-10", type: "尽调报告", size: "5.1MB", forPkg: "PKG-2025-001" },
   { id: 3, name: "华南资产包B-尽调报告.pdf", date: "2025-05-25", type: "尽调报告", size: "4.8MB", forPkg: "PKG-2025-002" },
-  { id: 4, name: "合伙协议-鼎信一号.pdf", date: "2025-03-01", type: "合同文件", size: "1.2MB", forInv: "inv1" },
-  { id: 5, name: "合伙协议-恒达投资.pdf", date: "2025-03-05", type: "合同文件", size: "1.1MB", forInv: "inv2" },
+  { id: 4, name: "合伙协议-和基一号.pdf", date: "2025-03-01", type: "合同文件", size: "1.2MB", forInv: "inv1" },
+  { id: 5, name: "合伙协议-和基二号.pdf", date: "2025-03-05", type: "合同文件", size: "1.1MB", forInv: "inv2" },
   { id: 6, name: "投资合同-王强.pdf", date: "2025-03-10", type: "合同文件", size: "1.0MB", forInv: "inv3" },
-  { id: 7, name: "鼎信一号-份额确认书.pdf", date: "2025-03-15", type: "份额文件", size: "0.5MB", forInv: "inv1" },
-  { id: 8, name: "恒达投资-份额确认书.pdf", date: "2025-03-15", type: "份额文件", size: "0.5MB", forInv: "inv2" },
+  { id: 7, name: "和基一号-份额确认书.pdf", date: "2025-03-15", type: "份额文件", size: "0.5MB", forInv: "inv1" },
+  { id: 8, name: "和基二号-份额确认书.pdf", date: "2025-03-15", type: "份额文件", size: "0.5MB", forInv: "inv2" },
 ];
 
 /* ================================================================
@@ -427,6 +437,83 @@ const CompanyBm = ({ bm, setBm }) => <div>
 </div>;
 
 /* ================================================================
+   COMPANY ABOUT (EDITABLE)
+   ================================================================ */
+const CompanyAbout = ({ intro, setIntro, addLog }) => {
+  const [editing, setEditing] = useState(null); // field key being edited
+  const [draft, setDraft] = useState("");
+  const startEdit = (key, val) => { setEditing(key); setDraft(typeof val === "object" ? JSON.stringify(val, null, 2) : String(val)); };
+  const saveEdit = () => { if (!editing) return; try { const val = editing === "advantages" ? JSON.parse(draft) : draft; setIntro(p => ({ ...p, [editing]: val })); addLog(`更新公司介绍: ${editing}`); } catch (e) { /* ignore parse error */ } setEditing(null); };
+  const fields = [["name", "公司名称"], ["slogan", "公司口号"], ["overview", "公司简介"], ["structure", "投资结构说明"]];
+  return <div>
+    <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 20 }}>公司介绍管理</div>
+    {fields.map(([k, l]) => <div key={k} style={{ ...S.card, marginBottom: 12 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+        <span style={{ fontSize: 13, fontWeight: 600 }}>{l}</span>
+        <button onClick={() => startEdit(k, intro[k])} style={S.btnSm()}>编辑</button>
+      </div>
+      <div style={{ fontSize: 13, color: T.body, lineHeight: 1.8, whiteSpace: "pre-wrap" }}>{intro[k]}</div>
+    </div>)}
+    <div style={{ ...S.card, marginBottom: 12 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+        <span style={{ fontSize: 13, fontWeight: 600 }}>核心优势（JSON数组）</span>
+        <button onClick={() => startEdit("advantages", intro.advantages)} style={S.btnSm()}>编辑</button>
+      </div>
+      {intro.advantages.map((a, i) => <div key={i} style={{ fontSize: 13, color: T.body, padding: "6px 0", borderBottom: i < intro.advantages.length - 1 ? `1px solid ${T.borderL}` : "none" }}>{a}</div>)}
+    </div>
+    <div style={{ ...S.card, marginBottom: 12 }}>
+      <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 10 }}>基金要素</div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+        {Object.entries(intro.fundTerms).map(([k, v]) => <div key={k} style={{ padding: "8px 12px", background: T.bg3, borderRadius: 8 }}><div style={{ fontSize: 11, color: T.td }}>{k}</div><div style={{ fontSize: 13, fontWeight: 500, marginTop: 2 }}>{v}</div></div>)}
+      </div>
+    </div>
+    <Modal open={!!editing} onClose={() => setEditing(null)} title="编辑内容">
+      <textarea value={draft} onChange={e => setDraft(e.target.value)} rows={8} style={{ ...S.input, resize: "vertical", fontFamily: mono, fontSize: 13 }} />
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 16 }}><button onClick={() => setEditing(null)} style={S.btnG}>取消</button><button onClick={saveEdit} style={S.btn()}>保存</button></div>
+    </Modal>
+  </div>;
+};
+
+/* Investor-side About (read-only) */
+const InvAbout = ({ intro }) => <div>
+  <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 20 }}>关于和昱诚</div>
+  {/* Hero */}
+  <div style={{ ...S.card, marginBottom: 16, background: `linear-gradient(135deg, ${T.blueBg}, ${T.white})`, border: `1px solid ${T.blueBd}` }}>
+    <div style={{ fontSize: 18, fontWeight: 700, color: T.blue, marginBottom: 6 }}>{intro.name}</div>
+    <div style={{ fontSize: 14, color: T.amber, fontWeight: 600, marginBottom: 12 }}>{intro.slogan}</div>
+    <div style={{ fontSize: 13, color: T.body, lineHeight: 1.8 }}>{intro.overview}</div>
+  </div>
+  {/* Advantages */}
+  <div style={{ ...S.card, marginBottom: 16 }}>
+    <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 14 }}>核心优势</div>
+    {intro.advantages.map((a, i) => <div key={i} style={{ display: "flex", gap: 10, padding: "10px 0", borderBottom: i < intro.advantages.length - 1 ? `1px solid ${T.borderL}` : "none" }}>
+      <div style={{ width: 28, height: 28, borderRadius: 8, background: T.blueBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: T.blue, flexShrink: 0 }}>{String(i + 1).padStart(2, "0")}</div>
+      <div style={{ fontSize: 13, color: T.body, lineHeight: 1.6 }}>{a}</div>
+    </div>)}
+  </div>
+  {/* Structure */}
+  <div style={{ ...S.card, marginBottom: 16 }}>
+    <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 10 }}>投资结构</div>
+    <div style={{ fontSize: 13, color: T.body, lineHeight: 1.8 }}>{intro.structure}</div>
+  </div>
+  {/* Fund terms */}
+  <div style={{ ...S.card, marginBottom: 16 }}>
+    <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 14 }}>基金要素</div>
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+      {[["scale", "规模"], ["duration", "期限"], ["scope", "投资范围"], ["mgmtFee", "管理费"], ["carry", "超额报酬"], ["hurdle", "基础收益门槛"], ["distribution", "分配顺序"], ["frequency", "分配频次"]].map(([k, l]) =>
+        <div key={k} style={{ padding: "10px 14px", background: T.bg3, borderRadius: 8 }}><div style={{ fontSize: 11, color: T.td, marginBottom: 3 }}>{l}</div><div style={{ fontSize: 13, fontWeight: 500, color: T.text }}>{intro.fundTerms[k]}</div></div>)}
+    </div>
+  </div>
+  {/* Contact */}
+  <div style={{ ...S.card }}>
+    <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 10 }}>联系方式</div>
+    <div style={{ fontSize: 13, color: T.body, lineHeight: 1.8 }}>
+      电话：{intro.contact.phone}<br />上海：{intro.contact.shanghai}<br />南京：{intro.contact.nanjing}
+    </div>
+  </div>
+</div>;
+
+/* ================================================================
    INVESTOR VIEWS
    ================================================================ */
 
@@ -633,19 +720,20 @@ const InvDocs = ({ docs, invId, inv }) => {
 /* ================================================================
    MAIN APP
    ================================================================ */
-const CTABS = [["dash", "运营概览"], ["pkgs", "资产包管理"], ["loans", "信贷明细"], ["invs", "投资者管理"], ["ann", "公告管理"], ["bm", "行业基准"]];
-const ITABS = [["summary", "投资总览"], ["detail", "资产包详情"], ["flow", "资本账户"], ["loans", "信贷明细"], ["ann", "公告通知"], ["docs", "文档中心"]];
+const CTABS = [["dash", "运营概览"], ["pkgs", "资产包管理"], ["loans", "信贷明细"], ["invs", "投资者管理"], ["ann", "公告管理"], ["about", "公司介绍"], ["bm", "行业基准"]];
+const ITABS = [["summary", "投资总览"], ["detail", "资产包详情"], ["flow", "资本账户"], ["loans", "信贷明细"], ["ann", "公告通知"], ["docs", "文档中心"], ["about", "关于我们"]];
 
 export default function App() {
   useEffect(() => { if (!document.getElementById("nf")) { const l = document.createElement("link"); l.id = "nf"; l.rel = "stylesheet"; l.href = "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap"; document.head.appendChild(l); } }, []);
   const mobile = useIsMobile();
   const [role, setRole] = useState(null); const [invId, setInvId] = useState("inv1");
   const [pkgs, setPkgs] = useState(initPkgs); const [investors, setInvestors] = useState(initInvestors); const [bm, setBm] = useState(initBm);
+  const [companyIntro, setCompanyIntro] = useState(initCompanyIntro);
   const [ann, setAnn] = useState(initAnnouncements); const [docs] = useState(initDocs);
   const [logs, setLogs] = useState([]);
   const [ct, setCt] = useState("dash"); const [it, setIt] = useState("summary"); const [sp, setSp] = useState(0);
   const [loginTab, setLoginTab] = useState("company"); const [pw, setPw] = useState(""); const [invPw, setInvPw] = useState(""); const [loginInvId, setLoginInvId] = useState("inv1"); const [err, setErr] = useState(""); const [showForgot, setShowForgot] = useState(false);
-  const [sideOpen, setSideOpen] = useState(true);
+  const [sideOpen, setSideOpen] = useState(false);
 
   const addLog = action => setLogs(v => [...v, { action, time: new Date().toLocaleString("zh-CN") }]);
 
@@ -677,7 +765,7 @@ export default function App() {
           </> : <>
             <Field label="选择账户"><select value={loginInvId} onChange={e => setLoginInvId(e.target.value)} style={{ ...S.select, width: "100%" }}>{investors.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}</select></Field>
             <Field label="密码"><input type="password" value={invPw} onChange={e => setInvPw(e.target.value)} onKeyDown={e => e.key === "Enter" && handleLogin()} placeholder="请输入密码" style={S.input} /></Field>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 18 }}><div style={{ fontSize: 11, color: T.td, padding: "4px 8px", background: T.bg3, borderRadius: 6 }}>演示: dingxin123 / hengda123 / wang123</div><button onClick={() => setShowForgot(true)} style={{ background: "none", border: "none", color: T.blue, fontSize: 12, cursor: "pointer", fontFamily: font }}>忘记密码？</button></div>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 18 }}><div style={{ fontSize: 11, color: T.td, padding: "4px 8px", background: T.bg3, borderRadius: 6 }}>演示: heji123 / heji456 / wang123</div><button onClick={() => setShowForgot(true)} style={{ background: "none", border: "none", color: T.blue, fontSize: 12, cursor: "pointer", fontFamily: font }}>忘记密码？</button></div>
             <button onClick={handleLogin} style={{ ...S.btn(T.teal), width: "100%", padding: "10px 0", fontSize: 14 }}>登录</button>
           </>}
           {err && <div style={{ marginTop: 12, fontSize: 13, color: T.red, textAlign: "center", padding: 8, background: T.redBg, borderRadius: 8 }}>{err}</div>}
@@ -702,13 +790,13 @@ export default function App() {
   const invPkgs = curInv ? pkgs.filter(p => curInv.share[p.id]) : pkgs; const curPkg = invPkgs[sp] || invPkgs[0];
 
   const content = () => {
-    if (isC) { switch (ct) { case "dash": return <CompanyDash pkgs={pkgs} investors={investors} logs={logs} />; case "pkgs": return <CompanyPkgs pkgs={pkgs} setPkgs={setPkgs} addLog={addLog} />; case "loans": return <CompanyLoans pkgs={pkgs} setPkgs={setPkgs} addLog={addLog} />; case "invs": return <CompanyInvs investors={investors} setInvestors={setInvestors} pkgs={pkgs} addLog={addLog} />; case "ann": return <CompanyAnnouncements ann={ann} setAnn={setAnn} addLog={addLog} />; case "bm": return <CompanyBm bm={bm} setBm={setBm} />; } }
-    else { if (!curPkg && it !== "summary" && it !== "ann" && it !== "docs") return <div style={{ textAlign: "center", padding: 60, color: T.td }}>暂无资产包</div>; switch (it) { case "summary": return <InvSummary pkgs={pkgs} inv={curInv} allInv={investors} />; case "detail": return <InvDetail pkg={curPkg} inv={curInv} />; case "flow": return <InvFlow pkg={curPkg} inv={curInv} />; case "loans": return <InvLoans pkg={curPkg} />; case "ann": return <InvAnnouncements ann={ann} />; case "docs": return <InvDocs docs={docs} invId={invId} inv={curInv} />; } }
+    if (isC) { switch (ct) { case "dash": return <CompanyDash pkgs={pkgs} investors={investors} logs={logs} />; case "pkgs": return <CompanyPkgs pkgs={pkgs} setPkgs={setPkgs} addLog={addLog} />; case "loans": return <CompanyLoans pkgs={pkgs} setPkgs={setPkgs} addLog={addLog} />; case "invs": return <CompanyInvs investors={investors} setInvestors={setInvestors} pkgs={pkgs} addLog={addLog} />; case "ann": return <CompanyAnnouncements ann={ann} setAnn={setAnn} addLog={addLog} />; case "about": return <CompanyAbout intro={companyIntro} setIntro={setCompanyIntro} addLog={addLog} />; case "bm": return <CompanyBm bm={bm} setBm={setBm} />; } }
+    else { if (!curPkg && it !== "summary" && it !== "ann" && it !== "docs" && it !== "about") return <div style={{ textAlign: "center", padding: 60, color: T.td }}>暂无资产包</div>; switch (it) { case "summary": return <InvSummary pkgs={pkgs} inv={curInv} allInv={investors} />; case "detail": return <InvDetail pkg={curPkg} inv={curInv} />; case "flow": return <InvFlow pkg={curPkg} inv={curInv} />; case "loans": return <InvLoans pkg={curPkg} />; case "ann": return <InvAnnouncements ann={ann} />; case "docs": return <InvDocs docs={docs} invId={invId} inv={curInv} />; case "about": return <InvAbout intro={companyIntro} />; } }
   };
 
   const sidebarContent = <>
     <div style={{ padding: "0 20px 14px", fontSize: 11, color: T.sideT, letterSpacing: ".06em", fontWeight: 500 }}>{isC ? "管理菜单" : "投资者菜单"}</div>
-    {tabs.map(([k, l]) => <div key={k} onClick={() => { setAt(k); setSideOpen(false); }} style={{ padding: "11px 20px", fontSize: 13, cursor: "pointer", color: at === k ? T.sideA : T.sideT, background: at === k ? "rgba(255,255,255,.08)" : "transparent", borderLeft: at === k ? `3px solid ${isC ? T.blueL : T.teal}` : "3px solid transparent", fontWeight: at === k ? 600 : 400 }}>{l}</div>)}
+    {tabs.map(([k, l]) => <div key={k} onClick={() => { setAt(k); if (mobile) setSideOpen(false); }} style={{ padding: "11px 20px", fontSize: 13, cursor: "pointer", color: at === k ? T.sideA : T.sideT, background: at === k ? "rgba(255,255,255,.08)" : "transparent", borderLeft: at === k ? `3px solid ${isC ? T.blueL : T.teal}` : "3px solid transparent", fontWeight: at === k ? 600 : 400 }}>{l}</div>)}
     {!isC && curInv && <div style={{ margin: "20px 20px 0", padding: "12px 0", borderTop: "1px solid rgba(255,255,255,.1)" }}>
       <div style={{ fontSize: 11, color: T.sideT, marginBottom: 4 }}>当前身份</div>
       <div style={{ fontSize: 14, fontWeight: 600, color: T.sideA }}>{curInv.name}</div>
@@ -718,7 +806,8 @@ export default function App() {
   return <div style={{ fontFamily: font, background: T.bg, color: T.text, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
     <div style={{ background: T.white, borderBottom: `1px solid ${T.border}`, padding: "0 16px", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <div onClick={() => setSideOpen(!sideOpen)} style={{ width: 28, height: 28, borderRadius: 7, background: `linear-gradient(135deg,${T.blue},${T.purple})`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", transition: "opacity .15s" }} onMouseEnter={e => e.currentTarget.style.opacity = ".8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" /></svg></div>
+        {mobile && <button onClick={() => setSideOpen(!sideOpen)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", padding: "4px 6px" }}>☰</button>}
+        <div onClick={() => { setAt(isC ? "dash" : "summary"); }} style={{ width: 28, height: 28, borderRadius: 7, background: `linear-gradient(135deg,${T.blue},${T.purple})`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", transition: "opacity .15s" }} onMouseEnter={e => e.currentTarget.style.opacity = ".8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" /></svg></div>
         {!mobile && <span style={{ fontSize: 15, fontWeight: 700 }}>NPL Asset Tracker</span>}
         <span style={{ fontSize: 11, fontWeight: 600, color: isC ? T.blue : T.teal, padding: "2px 8px", background: isC ? T.blueBg : T.greenBg, borderRadius: 6 }}>{isC ? "管理端" : "投资者"}</span>
       </div>
@@ -730,7 +819,7 @@ export default function App() {
     </div>
     <div style={{ display: "flex", flex: 1, position: "relative" }}>
       {mobile ? (sideOpen && <><div onClick={() => setSideOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.3)", zIndex: 200 }} /><div style={{ position: "fixed", left: 0, top: 52, bottom: 0, width: 220, background: T.sidebar, zIndex: 201, padding: "16px 0", overflowY: "auto" }}>{sidebarContent}</div></>)
-        : (sideOpen && <div style={{ width: 200, background: T.sidebar, padding: "16px 0", flexShrink: 0, minHeight: "calc(100vh - 52px)", transition: "width .2s" }}>{sidebarContent}</div>)}
+        : <div style={{ width: 200, background: T.sidebar, padding: "16px 0", flexShrink: 0, minHeight: "calc(100vh - 52px)" }}>{sidebarContent}</div>}
       <div style={{ flex: 1, padding: mobile ? 16 : 28, overflowY: "auto", maxHeight: "calc(100vh - 52px)" }}>{content()}</div>
     </div>
   </div>;
