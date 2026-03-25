@@ -56,9 +56,9 @@ const initPkgs = [
 initPkgs.forEach(p => { p.loanCount = p.loans.length; p.discountRate = p.purchasePrice / p.faceValue; p.payments = genWeekly(p.loans); });
 
 const initInvestors = [
-  { id: "inv1", name: "张伟", share: { "PKG-2025-001": .45, "PKG-2025-002": .55 }, capital: { "PKG-2025-001": 225000, "PKG-2025-002": 264000 }, phone: "13812345678", contractDate: "2025-03-01", password: "zhang123" },
-  { id: "inv2", name: "李芳", share: { "PKG-2025-001": .35, "PKG-2025-002": .45 }, capital: { "PKG-2025-001": 175000, "PKG-2025-002": 216000 }, phone: "13987654321", contractDate: "2025-03-05", password: "li123" },
-  { id: "inv3", name: "王强", share: { "PKG-2025-001": .20 }, capital: { "PKG-2025-001": 100000 }, phone: "13611112222", contractDate: "2025-03-10", password: "wang123" },
+  { id: "inv1", name: "鼎信一号合伙企业(SPV)", type: "SPV", share: { "PKG-2025-001": .45, "PKG-2025-002": .55 }, capital: { "PKG-2025-001": 225000, "PKG-2025-002": 264000 }, phone: "021-88886666", contractDate: "2025-03-01", password: "dingxin123" },
+  { id: "inv2", name: "恒达投资合伙企业(SPV)", type: "SPV", share: { "PKG-2025-001": .35, "PKG-2025-002": .45 }, capital: { "PKG-2025-001": 175000, "PKG-2025-002": 216000 }, phone: "010-66665555", contractDate: "2025-03-05", password: "hengda123" },
+  { id: "inv3", name: "王强", type: "个人", share: { "PKG-2025-001": .20 }, capital: { "PKG-2025-001": 100000 }, phone: "13611112222", contractDate: "2025-03-10", password: "wang123" },
 ];
 const initBm = { industry3m: .15, industry6m: .32, industry12m: .55 };
 
@@ -69,18 +69,21 @@ const initAnnouncements = [
 ];
 
 const initDocs = [
-  { id: 1, name: "2025Q3季度投资报告.pdf", date: "2025-09-30", type: "季度报告", size: "2.4MB" },
-  { id: 2, name: "华东资产包A-尽调报告.pdf", date: "2025-03-10", type: "尽调报告", size: "5.1MB" },
-  { id: 3, name: "华南资产包B-尽调报告.pdf", date: "2025-05-25", type: "尽调报告", size: "4.8MB" },
-  { id: 4, name: "投资合同-张伟.pdf", date: "2025-03-01", type: "合同文件", size: "1.2MB" },
-  { id: 5, name: "投资合同-李芳.pdf", date: "2025-03-05", type: "合同文件", size: "1.1MB" },
-  { id: 6, name: "投资合同-王强.pdf", date: "2025-03-10", type: "合同文件", size: "1.0MB" },
+  { id: 1, name: "2025Q3季度投资报告.pdf", date: "2025-09-30", type: "季度报告", size: "2.4MB", forAll: true },
+  { id: 2, name: "华东资产包A-尽调报告.pdf", date: "2025-03-10", type: "尽调报告", size: "5.1MB", forPkg: "PKG-2025-001" },
+  { id: 3, name: "华南资产包B-尽调报告.pdf", date: "2025-05-25", type: "尽调报告", size: "4.8MB", forPkg: "PKG-2025-002" },
+  { id: 4, name: "合伙协议-鼎信一号.pdf", date: "2025-03-01", type: "合同文件", size: "1.2MB", forInv: "inv1" },
+  { id: 5, name: "合伙协议-恒达投资.pdf", date: "2025-03-05", type: "合同文件", size: "1.1MB", forInv: "inv2" },
+  { id: 6, name: "投资合同-王强.pdf", date: "2025-03-10", type: "合同文件", size: "1.0MB", forInv: "inv3" },
+  { id: 7, name: "鼎信一号-份额确认书.pdf", date: "2025-03-15", type: "份额文件", size: "0.5MB", forInv: "inv1" },
+  { id: 8, name: "恒达投资-份额确认书.pdf", date: "2025-03-15", type: "份额文件", size: "0.5MB", forInv: "inv2" },
 ];
 
 /* ================================================================
    UTILS
    ================================================================ */
 const maskN = n => n ? n[0] + "**" : "**";
+const maskId = id => id ? id.slice(0, 6) + "********" + id.slice(-4) : "";
 const maskAddr = a => { const m = a?.match(/(.*?市)/); return m ? m[1] : ""; };
 const fmt = n => n >= 10000 ? (n / 10000).toFixed(2) + "万" : n.toLocaleString("zh-CN");
 const fmtF = n => Math.round(n).toLocaleString("zh-CN");
@@ -126,7 +129,7 @@ const S = {
 /* ================================================================
    SHARED COMPONENTS
    ================================================================ */
-const Badge = ({ s }) => { const c = { "未触达": T.td, "协商中": T.amber, "承诺还款": T.purple, "已回款": T.green, "失联": T.red, "诉讼中": T.coral }; return <span style={S.badge(c[s] || T.td)}>{s}</span>; };
+const Badge = ({ s }) => { const c = { "未触达": T.td, "协商中": T.amber, "承诺还款": T.purple, "已回款": T.green, "失联": T.red, "处置中": T.coral, "诉讼中": T.coral }; return <span style={S.badge(c[s] || T.td)}>{s}</span>; };
 
 const Modal = ({ open, onClose, title, children }) => open ? <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.3)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 16 }} onClick={onClose}>
   <div style={{ background: T.white, borderRadius: 16, border: `1px solid ${T.border}`, padding: "28px 24px", width: 560, maxWidth: "100%", maxHeight: "85vh", overflowY: "auto", boxShadow: "0 20px 60px rgba(0,0,0,.12)" }} onClick={e => e.stopPropagation()}>
@@ -428,7 +431,7 @@ const CompanyBm = ({ bm, setBm }) => <div>
    ================================================================ */
 
 /* Multi-package summary */
-const InvSummary = ({ pkgs, inv, allInv, bm }) => {
+const InvSummary = ({ pkgs, inv, allInv }) => {
   const mobile = useIsMobile();
   const myPkgs = pkgs.filter(p => inv.share[p.id]);
   const totals = myPkgs.reduce((acc, p) => { const r = calcR(p, inv); if (!r) return acc; return { cap: acc.cap + r.cap, my: acc.my + r.my, tot: acc.tot + r.tot * r.sh, gap: acc.gap + r.gap, profit: acc.profit + r.profit }; }, { cap: 0, my: 0, tot: 0, gap: 0, profit: 0 });
@@ -491,13 +494,14 @@ const InvSummary = ({ pkgs, inv, allInv, bm }) => {
 };
 
 /* Single package detail */
-const InvDetail = ({ pkg, inv, bm }) => {
+const InvDetail = ({ pkg, inv }) => {
   const mobile = useIsMobile();
   const r = calcR(pkg, inv); if (!r) return null;
-  const statusCounts = {}; pkg.loans.forEach(l => { statusCounts[l.status] = (statusCounts[l.status] || 0) + 1; });
-  const pieData = Object.entries(statusCounts).map(([k, v]) => ({ name: k, value: v }));
-  const pieColors = { "已回款": T.green, "协商中": T.amber, "承诺还款": T.purple, "未触达": "#94a3b8", "失联": T.red, "诉讼中": T.coral };
-  const curveData = pkg.payments.map((p, i) => ({ w: p.weekLabel, 已回款: Math.round(p.cumulative * r.sh * (1 - r.tfr)), 行业基准: Math.round(r.cap * (bm.industry12m * (i + 1) / pkg.payments.length) * (1 - r.tfr)) }));
+  const rawCounts = {}; pkg.loans.forEach(l => { const s = l.status === "失联" ? "处置中" : l.status; rawCounts[s] = (rawCounts[s] || 0) + 1; });
+  const pieData = Object.entries(rawCounts).map(([k, v]) => ({ name: k, value: v }));
+  const pieColors = { "已回款": T.green, "协商中": T.amber, "承诺还款": T.purple, "未触达": "#94a3b8", "处置中": T.coral, "诉讼中": T.coral };
+  const pieLabel = ({ name, value, cx, x, y }) => <text x={x} y={y} fill={T.body} fontSize={11} textAnchor={x > cx ? "start" : "end"} dominantBaseline="central">{name} {value}笔</text>;
+  const curveData = pkg.payments.map((p) => ({ w: p.weekLabel, 已回款: Math.round(p.cumulative * r.sh * (1 - r.tfr)) }));
 
   return <div>
     <div style={{ fontSize: 20, fontWeight: 700 }}>{pkg.name}</div>
@@ -515,10 +519,7 @@ const InvDetail = ({ pkg, inv, bm }) => {
     {/* Charts */}
     <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "3fr 2fr", gap: 16, marginBottom: 16 }}>
       <div style={S.card}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14, flexWrap: "wrap", gap: 6 }}>
-          <span style={{ fontSize: 14, fontWeight: 600 }}>回款趋势</span>
-          <div style={{ display: "flex", gap: 10, fontSize: 11 }}><span style={{ color: T.blue }}>● 净回款</span><span style={{ color: T.amber }}>● 行业基准</span></div>
-        </div>
+        <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 14 }}>回款趋势</div>
         <ResponsiveContainer width="100%" height={mobile ? 200 : 240}>
           <AreaChart data={curveData} margin={{ top: 5, right: 5, left: 0, bottom: 0 }}>
             <defs><linearGradient id="gB" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor={T.blue} stopOpacity={.15} /><stop offset="95%" stopColor={T.blue} stopOpacity={0} /></linearGradient></defs>
@@ -526,16 +527,15 @@ const InvDetail = ({ pkg, inv, bm }) => {
             <Tooltip contentStyle={tipS} formatter={v => `¥${fmtF(v)}`} />
             <ReferenceLine y={r.cap} stroke={T.red} strokeDasharray="6 4" strokeOpacity={.35} label={{ value: "本金", position: "right", fontSize: 10, fill: T.red }} />
             <Area type="monotone" dataKey="已回款" stroke={T.blue} fill="url(#gB)" strokeWidth={2.5} />
-            <Area type="monotone" dataKey="行业基准" stroke={T.amber} fill="transparent" strokeWidth={1.5} strokeDasharray="4 4" />
           </AreaChart>
         </ResponsiveContainer>
       </div>
       <div style={S.card}>
         <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 14 }}>催收状态</div>
         <ResponsiveContainer width="100%" height={mobile ? 200 : 240}>
-          <PieChart><Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="45%" outerRadius={mobile ? 60 : 70} innerRadius={mobile ? 30 : 38} paddingAngle={2} strokeWidth={0}>
+          <PieChart><Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="45%" outerRadius={mobile ? 60 : 70} innerRadius={0} paddingAngle={2} strokeWidth={1} stroke={T.white} label={pieLabel} labelLine={{ stroke: T.td, strokeWidth: 0.5 }}>
             {pieData.map((d, i) => <Cell key={i} fill={pieColors[d.name] || T.td} />)}
-          </Pie><Legend wrapperStyle={{ fontSize: 11 }} formatter={v => <span style={{ color: T.body }}>{v}</span>} /><Tooltip contentStyle={tipS} /></PieChart>
+          </Pie><Tooltip contentStyle={tipS} /></PieChart>
         </ResponsiveContainer>
       </div>
     </div>
@@ -572,27 +572,29 @@ const InvFlow = ({ pkg, inv }) => {
 };
 
 /* Loans (masked) */
+const invStatusDisplay = s => s === "失联" ? "处置中" : s;
+const INV_STS = ["未触达", "协商中", "承诺还款", "已回款", "处置中", "诉讼中"];
 const InvLoans = ({ pkg }) => {
   const mobile = useIsMobile();
   const [ft, setFt] = useState("全部"); const [q, setQ] = useState(""); const [pg, setPg] = useState(0); const PS = 15;
-  const fl = pkg.loans.filter(l => (ft === "全部" || l.status === ft) && (!q || l.id.includes(q)));
+  const fl = pkg.loans.filter(l => { const ds = invStatusDisplay(l.status); return (ft === "全部" || ds === ft) && (!q || l.id.includes(q)); });
   const pd = fl.slice(pg * PS, (pg + 1) * PS);
   return <div>
     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}><span style={{ fontSize: 20, fontWeight: 700 }}>信贷明细</span><span style={S.tag(T.td)}>脱敏</span></div>
     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12, flexWrap: "wrap", gap: 8 }}>
-      <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>{["全部", ...STS].map(s => <button key={s} onClick={() => { setFt(s); setPg(0); }} style={{ padding: "4px 12px", borderRadius: 20, border: `1px solid ${ft === s ? T.blue : T.border}`, background: ft === s ? T.blueBg : T.white, color: ft === s ? T.blue : T.tm, fontSize: 12, cursor: "pointer", fontFamily: font, fontWeight: ft === s ? 600 : 400 }}>{s}</button>)}</div>
+      <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>{["全部", ...INV_STS].map(s => <button key={s} onClick={() => { setFt(s); setPg(0); }} style={{ padding: "4px 12px", borderRadius: 20, border: `1px solid ${ft === s ? T.blue : T.border}`, background: ft === s ? T.blueBg : T.white, color: ft === s ? T.blue : T.tm, fontSize: 12, cursor: "pointer", fontFamily: font, fontWeight: ft === s ? 600 : 400 }}>{s}</button>)}</div>
       <input placeholder="搜索编号" value={q} onChange={e => { setQ(e.target.value); setPg(0); }} style={{ ...S.input, width: 140 }} />
     </div>
     <div style={{ ...S.card, padding: 0, overflow: "hidden" }}><div style={{ overflowX: "auto" }}><table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 0 }}>
-      <thead><tr>{(mobile ? ["姓名", "待收", "已收", "状态"] : ["编号", "姓名", "性别", "城市", "待收", "已收", "回收率", "状态"]).map(h => <th key={h} style={S.th}>{h}</th>)}</tr></thead>
+      <thead><tr>{(mobile ? ["姓名", "待收", "已收", "状态"] : ["编号", "姓名", "证件号", "城市", "待收", "已收", "回收率", "状态"]).map(h => <th key={h} style={S.th}>{h}</th>)}</tr></thead>
       <tbody>{pd.map(l => <tr key={l.id} onMouseEnter={e => e.currentTarget.style.background = T.hover} onMouseLeave={e => e.currentTarget.style.background = ""}>
         {!mobile && <td style={{ ...S.td, fontFamily: mono, fontSize: 11, color: T.td }}>{l.id}</td>}
         <td style={{ ...S.td, fontWeight: 600 }}>{maskN(l.name)}</td>
-        {!mobile && <><td style={S.td}>{l.gender}</td><td style={S.td}>{maskAddr(l.address)}</td></>}
+        {!mobile && <><td style={{ ...S.td, fontFamily: mono, fontSize: 11 }}>{maskId(l.idNumber)}</td><td style={S.td}>{maskAddr(l.address)}</td></>}
         <td style={{ ...S.td, fontFamily: mono }}>¥{fmtF(l.totalDue)}</td>
         <td style={{ ...S.td, fontFamily: mono, color: l.recovered > 0 ? T.green : T.td }}>¥{fmtF(l.recovered)}</td>
         {!mobile && <td style={S.td}>{pct(l.recoveryRate)}</td>}
-        <td style={S.td}><Badge s={l.status} /></td>
+        <td style={S.td}><Badge s={invStatusDisplay(l.status)} /></td>
       </tr>)}</tbody>
     </table></div>
     <Pager total={fl.length} page={pg} setPage={setPg} /></div>
@@ -609,19 +611,24 @@ const InvAnnouncements = ({ ann }) => <div>
   {ann.length === 0 && <div style={{ textAlign: "center", padding: 40, color: T.td }}>暂无公告</div>}
 </div>;
 
-/* Document center (read-only) */
-const InvDocs = ({ docs }) => <div>
-  <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 16 }}>文档中心</div>
-  <div style={{ ...S.card, padding: 0 }}>
-    {docs.map((d, i) => <div key={d.id} style={{ padding: "12px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: i < docs.length - 1 ? `1px solid ${T.borderL}` : "none" }} onMouseEnter={e => e.currentTarget.style.background = T.hover} onMouseLeave={e => e.currentTarget.style.background = ""}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <span style={{ fontSize: 22 }}>📄</span>
-        <div><div style={{ fontSize: 13, fontWeight: 600 }}>{d.name}</div><div style={{ fontSize: 12, color: T.td }}>{d.type} · {d.date} · {d.size}</div></div>
-      </div>
-      <button style={S.btnSm(T.blue)}>下载</button>
-    </div>)}
-  </div>
-</div>;
+/* Document center (filtered by investor) */
+const InvDocs = ({ docs, invId, inv }) => {
+  const myPkgs = inv ? Object.keys(inv.share) : [];
+  const myDocs = docs.filter(d => d.forAll || d.forInv === invId || (d.forPkg && myPkgs.includes(d.forPkg)));
+  return <div>
+    <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 16 }}>文档中心</div>
+    {myDocs.length === 0 && <div style={{ textAlign: "center", padding: 40, color: T.td }}>暂无相关文档</div>}
+    {myDocs.length > 0 && <div style={{ ...S.card, padding: 0 }}>
+      {myDocs.map((d, i) => <div key={d.id} style={{ padding: "12px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: i < myDocs.length - 1 ? `1px solid ${T.borderL}` : "none" }} onMouseEnter={e => e.currentTarget.style.background = T.hover} onMouseLeave={e => e.currentTarget.style.background = ""}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span style={{ fontSize: 22 }}>📄</span>
+          <div><div style={{ fontSize: 13, fontWeight: 600 }}>{d.name}</div><div style={{ fontSize: 12, color: T.td }}>{d.type} · {d.date} · {d.size}</div></div>
+        </div>
+        <button style={S.btnSm(T.blue)}>下载</button>
+      </div>)}
+    </div>}
+  </div>;
+};
 
 /* ================================================================
    MAIN APP
@@ -638,7 +645,7 @@ export default function App() {
   const [logs, setLogs] = useState([]);
   const [ct, setCt] = useState("dash"); const [it, setIt] = useState("summary"); const [sp, setSp] = useState(0);
   const [loginTab, setLoginTab] = useState("company"); const [pw, setPw] = useState(""); const [invPw, setInvPw] = useState(""); const [loginInvId, setLoginInvId] = useState("inv1"); const [err, setErr] = useState(""); const [showForgot, setShowForgot] = useState(false);
-  const [sideOpen, setSideOpen] = useState(false);
+  const [sideOpen, setSideOpen] = useState(true);
 
   const addLog = action => setLogs(v => [...v, { action, time: new Date().toLocaleString("zh-CN") }]);
 
@@ -670,7 +677,7 @@ export default function App() {
           </> : <>
             <Field label="选择账户"><select value={loginInvId} onChange={e => setLoginInvId(e.target.value)} style={{ ...S.select, width: "100%" }}>{investors.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}</select></Field>
             <Field label="密码"><input type="password" value={invPw} onChange={e => setInvPw(e.target.value)} onKeyDown={e => e.key === "Enter" && handleLogin()} placeholder="请输入密码" style={S.input} /></Field>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 18 }}><div style={{ fontSize: 11, color: T.td, padding: "4px 8px", background: T.bg3, borderRadius: 6 }}>演示: zhang123 / li123 / wang123</div><button onClick={() => setShowForgot(true)} style={{ background: "none", border: "none", color: T.blue, fontSize: 12, cursor: "pointer", fontFamily: font }}>忘记密码？</button></div>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 18 }}><div style={{ fontSize: 11, color: T.td, padding: "4px 8px", background: T.bg3, borderRadius: 6 }}>演示: dingxin123 / hengda123 / wang123</div><button onClick={() => setShowForgot(true)} style={{ background: "none", border: "none", color: T.blue, fontSize: 12, cursor: "pointer", fontFamily: font }}>忘记密码？</button></div>
             <button onClick={handleLogin} style={{ ...S.btn(T.teal), width: "100%", padding: "10px 0", fontSize: 14 }}>登录</button>
           </>}
           {err && <div style={{ marginTop: 12, fontSize: 13, color: T.red, textAlign: "center", padding: 8, background: T.redBg, borderRadius: 8 }}>{err}</div>}
@@ -696,7 +703,7 @@ export default function App() {
 
   const content = () => {
     if (isC) { switch (ct) { case "dash": return <CompanyDash pkgs={pkgs} investors={investors} logs={logs} />; case "pkgs": return <CompanyPkgs pkgs={pkgs} setPkgs={setPkgs} addLog={addLog} />; case "loans": return <CompanyLoans pkgs={pkgs} setPkgs={setPkgs} addLog={addLog} />; case "invs": return <CompanyInvs investors={investors} setInvestors={setInvestors} pkgs={pkgs} addLog={addLog} />; case "ann": return <CompanyAnnouncements ann={ann} setAnn={setAnn} addLog={addLog} />; case "bm": return <CompanyBm bm={bm} setBm={setBm} />; } }
-    else { if (!curPkg && it !== "summary" && it !== "ann" && it !== "docs") return <div style={{ textAlign: "center", padding: 60, color: T.td }}>暂无资产包</div>; switch (it) { case "summary": return <InvSummary pkgs={pkgs} inv={curInv} allInv={investors} bm={bm} />; case "detail": return <InvDetail pkg={curPkg} inv={curInv} bm={bm} />; case "flow": return <InvFlow pkg={curPkg} inv={curInv} />; case "loans": return <InvLoans pkg={curPkg} />; case "ann": return <InvAnnouncements ann={ann} />; case "docs": return <InvDocs docs={docs} />; } }
+    else { if (!curPkg && it !== "summary" && it !== "ann" && it !== "docs") return <div style={{ textAlign: "center", padding: 60, color: T.td }}>暂无资产包</div>; switch (it) { case "summary": return <InvSummary pkgs={pkgs} inv={curInv} allInv={investors} />; case "detail": return <InvDetail pkg={curPkg} inv={curInv} />; case "flow": return <InvFlow pkg={curPkg} inv={curInv} />; case "loans": return <InvLoans pkg={curPkg} />; case "ann": return <InvAnnouncements ann={ann} />; case "docs": return <InvDocs docs={docs} invId={invId} inv={curInv} />; } }
   };
 
   const sidebarContent = <>
@@ -711,8 +718,7 @@ export default function App() {
   return <div style={{ fontFamily: font, background: T.bg, color: T.text, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
     <div style={{ background: T.white, borderBottom: `1px solid ${T.border}`, padding: "0 16px", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        {mobile && <button onClick={() => setSideOpen(!sideOpen)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", padding: "4px 8px" }}>☰</button>}
-        <div style={{ width: 28, height: 28, borderRadius: 7, background: `linear-gradient(135deg,${T.blue},${T.purple})`, display: "flex", alignItems: "center", justifyContent: "center" }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" /></svg></div>
+        <div onClick={() => setSideOpen(!sideOpen)} style={{ width: 28, height: 28, borderRadius: 7, background: `linear-gradient(135deg,${T.blue},${T.purple})`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", transition: "opacity .15s" }} onMouseEnter={e => e.currentTarget.style.opacity = ".8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" /></svg></div>
         {!mobile && <span style={{ fontSize: 15, fontWeight: 700 }}>NPL Asset Tracker</span>}
         <span style={{ fontSize: 11, fontWeight: 600, color: isC ? T.blue : T.teal, padding: "2px 8px", background: isC ? T.blueBg : T.greenBg, borderRadius: 6 }}>{isC ? "管理端" : "投资者"}</span>
       </div>
@@ -724,7 +730,7 @@ export default function App() {
     </div>
     <div style={{ display: "flex", flex: 1, position: "relative" }}>
       {mobile ? (sideOpen && <><div onClick={() => setSideOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.3)", zIndex: 200 }} /><div style={{ position: "fixed", left: 0, top: 52, bottom: 0, width: 220, background: T.sidebar, zIndex: 201, padding: "16px 0", overflowY: "auto" }}>{sidebarContent}</div></>)
-        : <div style={{ width: 200, background: T.sidebar, padding: "16px 0", flexShrink: 0, minHeight: "calc(100vh - 52px)" }}>{sidebarContent}</div>}
+        : (sideOpen && <div style={{ width: 200, background: T.sidebar, padding: "16px 0", flexShrink: 0, minHeight: "calc(100vh - 52px)", transition: "width .2s" }}>{sidebarContent}</div>)}
       <div style={{ flex: 1, padding: mobile ? 16 : 28, overflowY: "auto", maxHeight: "calc(100vh - 52px)" }}>{content()}</div>
     </div>
   </div>;
